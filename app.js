@@ -1,3 +1,5 @@
+/** BizTime express application. */
+
 const express = require("express");
 
 const ExpressError = require("./expressError");

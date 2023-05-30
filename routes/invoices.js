@@ -1,8 +1,16 @@
+/** Routes for invoices. */
+
 const express = require("express");
 const ExpressError = require("../expressError");
 const db = require("../db");
 
 let router = new express.Router();
+
+/** GET / => list of invoices.
+ *
+ * =>  {invoices: [{id, comp_code}, ...]}
+ *
+ * */
 
 router.get("/", async function (req, res, next) {
   try {
@@ -17,6 +25,17 @@ router.get("/", async function (req, res, next) {
     return next(err);
   }
 });
+
+/** GET /[id] => detail on invoice
+ *
+ * =>  {invoices: {id,
+ *                amt,
+ *                paid,
+ *                add_date,
+ *                paid_date,
+ *                company: {code, name, description}}}
+ *
+ * */
 
 router.get("/:id", async function (req, res, next) {
   try {
@@ -61,6 +80,12 @@ router.get("/:id", async function (req, res, next) {
   }
 });
 
+/** POST / => add new invoice
+ *
+ * {comp_code, amt}  =>  {id, comp_code, amt, paid, add_date, paid_date}
+ *
+ * */
+
 router.post("/", async function (req, res, next) {
   try {
     let { comp_code, amt } = req.body;
@@ -77,6 +102,13 @@ router.post("/", async function (req, res, next) {
     return next(err);
   }
 });
+
+/** PUT /[code] => update invoice
+ *
+ * {amt, paid}  =>  {id, comp_code, amt, paid, add_date, paid_date}
+ *
+ * If paying unpaid invoice, set paid_date; if marking as unpaid, clear paid_date.
+ * */
 
 router.put("/:id", async function (req, res, next) {
   try {
@@ -118,6 +150,12 @@ router.put("/:id", async function (req, res, next) {
     return next(err);
   }
 });
+
+/** DELETE /[code] => delete invoice
+ *
+ * => {status: "deleted"}
+ *
+ */
 
 router.delete("/:id", async function (req, res, next) {
   try {
